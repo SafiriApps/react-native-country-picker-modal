@@ -17,6 +17,7 @@
     "minify:emoji": "./scripts/minify.js ./lib/assets/data/countries-emoji.json",
     "config:dev": "json -I -f package.json -e 'this.main=\"node_modules/expo/AppEntry.js\"'",
     "config:npm": "json -I -f package.json -e 'this.main=\"lib/index.js\"'",
+    "prepare": "yarn build",
     "lint": "eslint .",
     "test": "TZ=Europe/Paris jest",
     "test:ci": "yarn test",
