@@ -12,12 +12,13 @@
     "start": "yarn config:dev && expo start",
     "start:web": "yarn config:dev && expo start -w --dev",
     "tsc": "node_modules/.bin/tsc --noEmit",
-    "build": "rm -rf lib/ && node_modules/.bin/tsc && mkdir -p ./lib/assets && cp -rf ./src/assets/. ./lib/assets && yarn minify",
+    "build": "rm -rf lib/ && node_modules/.bin/tsc -p tsconfig.build.json && mkdir -p ./lib/assets && cp -rf ./src/assets/. ./lib/assets && yarn minify",
     "minify": "yarn minify:emoji",
     "minify:emoji": "./scripts/minify.js ./lib/assets/data/countries-emoji.json",
     "config:dev": "json -I -f package.json -e 'this.main=\"node_modules/expo/AppEntry.js\"'",
     "config:npm": "json -I -f package.json -e 'this.main=\"lib/index.js\"'",
     "prepare": "yarn build",
+    "prepack": "yarn build",
     "lint": "eslint .",
     "test": "TZ=Europe/Paris jest",
     "test:ci": "yarn test",
@@ -39,6 +40,12 @@
     "country-picker",
     "country",
     "flag"
+  ],
+  "files": [
+    "lib",
+    "LICENSE.md",
+    "README.md",
+    "react-native.config.js"
   ],
   "author": "Xavier Carpentier <xcapetir@gmail.com> (https://xaviercarpentier.com/)",
   "license": "MIT",
