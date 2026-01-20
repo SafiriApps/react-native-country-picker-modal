@@ -197,7 +197,7 @@ const DEFAULT_FUSE_OPTION: IFuseOptions<Country> = {
   keys: ['name', 'cca2', 'callingCode', 'currency'],
 }
 let fuse: Fuse<Country>
-let lastDataLength: number = 0
+let lastData: Country[] | null = null
 export const search = (
   filter: string = '',
   data: Country[] = [],
@@ -206,10 +206,10 @@ export const search = (
   if (data.length === 0) {
     return []
   }
-  // Reinitialize fuse if data changed
-  if (!fuse || data.length !== lastDataLength) {
+  // Reinitialize fuse if data reference changed (handles excludeCountries, preferredCountries, etc.)
+  if (!fuse || data !== lastData) {
     fuse = new Fuse<Country>(data, options)
-    lastDataLength = data.length
+    lastData = data
   }
   if (filter && filter !== '') {
     const result = fuse.search(filter)

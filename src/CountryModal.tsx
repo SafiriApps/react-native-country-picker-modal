@@ -32,10 +32,12 @@ export const CountryModal = ({
     </SafeAreaView>
   )
   React.useEffect(() => {
-    if (disableNativeModal) {
-      teleport!(<AnimatedModal {...props}>{content}</AnimatedModal>)
+    if (disableNativeModal && teleport) {
+      teleport(<AnimatedModal {...props}>{content}</AnimatedModal>)
     }
-  }, [disableNativeModal])
+    // content is derived from children and backgroundColor, so we include those
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [disableNativeModal, teleport, children, backgroundColor, props.visible])
   if (withModal) {
     if (Platform.OS === 'web') {
       return <Modal {...props}>{content}</Modal>

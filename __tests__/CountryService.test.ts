@@ -115,6 +115,28 @@ describe('search', () => {
     expect(result2.length).toBeGreaterThanOrEqual(1)
     expect(result2.some((c) => c.cca2 === 'JP')).toBe(true)
   })
+
+  it('reinitializes fuse when data content changes (same length)', () => {
+    // This tests the fix for the bug where Fuse would use stale data
+    // when excludeCountries changed the list but kept the same length
+
+    // First search with [france, germany]
+    const data1 = [france, germany]
+    const result1 = search('fra', data1)
+    expect(result1).toHaveLength(1)
+    expect(result1[0].cca2).toBe('FR')
+
+    // Second search with different data but SAME LENGTH [usa, japan]
+    // This should NOT find 'fra' because France is not in this data set
+    const data2 = [usa, japan]
+    const result2 = search('fra', data2)
+    expect(result2).toHaveLength(0) // Should be empty, France is not in data2
+
+    // Verify it can find countries in the new data set
+    const result3 = search('jap', data2)
+    expect(result3.length).toBeGreaterThanOrEqual(1)
+    expect(result3.some((c) => c.cca2 === 'JP')).toBe(true)
+  })
 })
 
 describe('getLetters', () => {
