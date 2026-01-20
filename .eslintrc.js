@@ -35,7 +35,7 @@ module.exports = {
     '@typescript-eslint',
   ],
   root: true,
-  ignorePatterns: ['.eslintrc.js', '*.test.tsx', '*.config.js'],
+  ignorePatterns: ['.eslintrc.js', '*.test.ts', '*.test.tsx', '*.config.js'],
   rules: {
     '@typescript-eslint/unbound-method': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
@@ -46,12 +46,13 @@ module.exports = {
         default: 'array',
       },
     ],
-    '@typescript-eslint/ban-types': [
+    '@typescript-eslint/no-restricted-types': [
       'error',
       {
         types: {
           Object: {
             message: 'Avoid using the `Object` type. Did you mean `object`?',
+            suggest: ['object'],
           },
           Function: {
             message:
@@ -59,15 +60,19 @@ module.exports = {
           },
           Boolean: {
             message: 'Avoid using the `Boolean` type. Did you mean `boolean`?',
+            suggest: ['boolean'],
           },
           Number: {
             message: 'Avoid using the `Number` type. Did you mean `number`?',
+            suggest: ['number'],
           },
           String: {
             message: 'Avoid using the `String` type. Did you mean `string`?',
+            suggest: ['string'],
           },
           Symbol: {
             message: 'Avoid using the `Symbol` type. Did you mean `symbol`?',
+            suggest: ['symbol'],
           },
         },
       },

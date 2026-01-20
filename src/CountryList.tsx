@@ -94,9 +94,9 @@ const CountryItem = (props: CountryItemProps) => {
   const {
     country,
     onSelect,
-    withFlag,
+    withFlag = true,
     withEmoji,
-    withCallingCode,
+    withCallingCode = false,
     withCurrency,
   } = props
   const extraContent: string[] = []
@@ -136,17 +136,13 @@ const CountryItem = (props: CountryItemProps) => {
     </TouchableOpacity>
   )
 }
-CountryItem.defaultProps = {
-  withFlag: true,
-  withCallingCode: false,
-}
 const MemoCountryItem = memo<CountryItemProps>(CountryItem)
 
 const renderItem =
   (props: Omit<CountryItemProps, 'country'>) =>
-  ({ item: country }: ListRenderItemInfo<Country>) => (
-    <MemoCountryItem {...{ country, ...props }} />
-  )
+    ({ item: country }: ListRenderItemInfo<Country>) => (
+      <MemoCountryItem {...{ country, ...props }} />
+    )
 
 interface CountryListProps {
   data: Country[]
@@ -181,14 +177,14 @@ export const CountryList = (props: CountryListProps) => {
     onSelect,
     filter,
     flatListProps,
-    filterFocus,
+    filterFocus = undefined,
   } = props
 
   const flatListRef = useRef<FlatList<Country>>(null)
   const [letter, setLetter] = useState<string>('')
   const { itemHeight, backgroundColor } = useTheme()
   const indexLetter = data
-    .map((country: Country) => (country.name as string).substr(0, 1))
+    .map((country: Country) => (country.name as string).substring(0, 1))
     .join('')
 
   const scrollTo = (letter: string, animated: boolean = true) => {
@@ -255,8 +251,4 @@ export const CountryList = (props: CountryListProps) => {
       )}
     </View>
   )
-}
-
-CountryList.defaultProps = {
-  filterFocus: undefined,
 }

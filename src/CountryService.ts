@@ -8,7 +8,7 @@ import {
   Region,
   Subregion,
 } from './types'
-import Fuse from 'fuse.js'
+import Fuse, { IFuseOptions } from 'fuse.js'
 
 const imageJsonUrl =
   'https://xcarpentier.github.io/react-native-country-picker-modal/countries/'
@@ -80,9 +80,11 @@ export const getCountryNameAsync = async (
     throw new Error('Unable to find image because imageCountries is undefined')
   }
 
-  return countries[countryCode].name
-    ? (countries[countryCode].name as TranslationLanguageCodeMap)[translation]
-    : (countries[countryCode].name as TranslationLanguageCodeMap)['common']
+  const name = countries[countryCode].name
+  if (typeof name === 'string') {
+    return name
+  }
+  return name[translation] || name['common']
 }
 
 export const getCountryCallingCodeAsync = async (countryCode: CountryCode) => {
@@ -187,30 +189,34 @@ export const getCountriesAsync = async (
   }
 }
 
-const DEFAULT_FUSE_OPTION = {
+const DEFAULT_FUSE_OPTION: IFuseOptions<Country> = {
   shouldSort: true,
   threshold: 0.3,
-  location: 0,
   distance: 100,
-  maxPatternLength: 32,
   minMatchCharLength: 1,
   keys: ['name', 'cca2', 'callingCode', 'currency'],
 }
 let fuse: Fuse<Country>
+let lastDataLength: number = 0
 export const search = (
   filter: string = '',
   data: Country[] = [],
-  options: Fuse.FuseOptions<Country> = DEFAULT_FUSE_OPTION,
-) => {
+  options: IFuseOptions<Country> = DEFAULT_FUSE_OPTION,
+): Country[] => {
   if (data.length === 0) {
     return []
   }
-  if (!fuse) {
+  // Reinitialize fuse if data changed
+  if (!fuse || data.length !== lastDataLength) {
     fuse = new Fuse<Country>(data, options)
+    lastDataLength = data.length
   }
   if (filter && filter !== '') {
     const result = fuse.search(filter)
-    return result
+    // Prior to Fuse v7, result was an array of matched Country objects directly.
+    // So before, we would have just: return result
+    // Now, in v7+, we extract the actual Country objects from the returned array of objects.
+    return result.map((r) => r.item)
   } else {
     return data
   }
@@ -221,7 +227,7 @@ export const getLetters = (countries: Country[]) => {
   return uniq(
     countries
       .map((country: Country) =>
-        (country.name as string).substr(0, 1).toLocaleUpperCase(),
+        (country.name as string).substring(0, 1).toLocaleUpperCase(),
       )
       .sort((l1: string, l2: string) => l1.localeCompare(l2)),
   )

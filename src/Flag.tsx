@@ -67,20 +67,23 @@ const EmojiFlag = memo(({ countryCode, flagSize }: FlagType) => {
   if (asyncResult.loading) {
     return <ActivityIndicator size={'small'} />
   }
+  if (!asyncResult.result) {
+    return null
+  }
   return (
     <Text
       style={[styles.emojiFlag, { fontSize: flagSize }]}
       allowFontScaling={false}
     >
-      <Emoji {...{ name: asyncResult.result! }} />
+      <Emoji name={asyncResult.result} />
     </Text>
   )
 })
 
 export const Flag = ({
   countryCode,
-  withEmoji,
-  withFlagButton,
+  withEmoji = true,
+  withFlagButton = true,
   flagSize,
 }: FlagType) =>
   withFlagButton ? (
@@ -92,8 +95,3 @@ export const Flag = ({
       )}
     </View>
   ) : null
-
-Flag.defaultProps = {
-  withEmoji: true,
-  withFlagButton: true,
-}

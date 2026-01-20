@@ -32,6 +32,26 @@
 $ yarn add react-native-country-picker-modal
 ```
 
+This package requires `react-native-safe-area-context`. Install it in your app:
+
+```bash
+$ yarn add react-native-safe-area-context
+```
+
+Wrap your app with `SafeAreaProvider` (usually at the root):
+
+```tsx
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      {/* your app */}
+    </SafeAreaProvider>
+  )
+}
+```
+
 ## Basic Usage
 
 For more complete example open [App.tsx](https://github.com/xcarpentier/react-native-country-picker-modal/blob/master/App.tsx)

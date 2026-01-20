@@ -4,10 +4,9 @@ import {
   ImageSourcePropType,
   ImageStyle,
   Platform,
+  Pressable,
   StyleProp,
   StyleSheet,
-  TouchableNativeFeedback,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native'
@@ -34,48 +33,21 @@ interface CloseButtonProps {
   onPress?(): void
 }
 
-const CloseButtonAndroid: React.FC<CloseButtonProps> = (props) => {
-  let closeImage: ImageSourcePropType = require('./assets/images/close.android.png')
-
-  if (props.image) {
-    closeImage = props.image
-  }
-  const { onBackgroundTextColor } = useTheme()
-  return (
-    <View style={[styles.container, props.style]}>
-      <TouchableNativeFeedback
-        background={
-          typeof Platform.Version === 'number' && Platform.Version < 21
-            ? TouchableNativeFeedback.SelectableBackground()
-            : TouchableNativeFeedback.SelectableBackgroundBorderless()
-        }
-        onPress={props.onPress}
-      >
-        <View>
-          <Image
-            source={closeImage}
-            style={[
-              styles.imageStyle,
-              props.imageStyle,
-              { tintColor: onBackgroundTextColor },
-            ]}
-          />
-        </View>
-      </TouchableNativeFeedback>
-    </View>
+const CloseButton = (props: CloseButtonProps) => {
+  const closeImage: ImageSourcePropType = props.image ?? (
+    Platform.OS === 'android'
+      ? require('./assets/images/close.android.png')
+      : require('./assets/images/close.ios.png')
   )
-}
-
-const CloseButtonIOS: React.FC<CloseButtonProps> = (props) => {
-  let closeImage = require('./assets/images/close.ios.png')
-
-  if (props.image) {
-    closeImage = props.image
-  }
   const { onBackgroundTextColor } = useTheme()
+
   return (
     <View style={[styles.container, props.style]}>
-      <TouchableOpacity onPress={props.onPress}>
+      <Pressable
+        onPress={props.onPress}
+        android_ripple={{ borderless: true, radius: 20 }}
+        style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+      >
         <Image
           source={closeImage}
           style={[
@@ -84,14 +56,9 @@ const CloseButtonIOS: React.FC<CloseButtonProps> = (props) => {
             { tintColor: onBackgroundTextColor },
           ]}
         />
-      </TouchableOpacity>
+      </Pressable>
     </View>
   )
 }
 
-export default Platform.select({
-  ios: CloseButtonIOS,
-  android: CloseButtonAndroid,
-  web: CloseButtonIOS,
-  default: CloseButtonIOS,
-})
+export default CloseButton
