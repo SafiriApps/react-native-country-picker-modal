@@ -26,18 +26,20 @@ export const CountryModal = ({
 }) => {
   const { backgroundColor } = useTheme()
   const { teleport } = React.useContext(CountryModalContext)
-  const content = (
-    <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      {children}
-    </SafeAreaView>
+  const { visible } = props
+  const content = React.useMemo(
+    () => (
+      <SafeAreaView style={[styles.container, { backgroundColor }]}>
+        {children}
+      </SafeAreaView>
+    ),
+    [children, backgroundColor]
   )
   React.useEffect(() => {
     if (disableNativeModal && teleport) {
       teleport(<AnimatedModal {...props}>{content}</AnimatedModal>)
     }
-    // content is derived from children and backgroundColor, so we include those
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [disableNativeModal, teleport, children, backgroundColor, props.visible])
+  }, [disableNativeModal, teleport, content, visible])
   if (withModal) {
     if (Platform.OS === 'web') {
       return <Modal {...props}>{content}</Modal>
@@ -45,7 +47,11 @@ export const CountryModal = ({
     if (disableNativeModal) {
       return null
     }
-    return <Modal {...props} animationType={animationType} animated={animated}>{content}</Modal>
+    return (
+      <Modal {...props} animationType={animationType} animated={animated}>
+        {content}
+      </Modal>
+    )
   }
   return content
 }
