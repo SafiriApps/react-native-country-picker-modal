@@ -3,18 +3,6 @@ import { render } from '@testing-library/react-native'
 import { Emoji } from '../src/Emoji'
 
 describe('Emoji', () => {
-  describe('non-flag emojis', () => {
-    it('renders smile emoji', () => {
-      const { getByText } = render(<Emoji name="smile" />)
-      expect(getByText('😄')).toBeTruthy()
-    })
-
-    it('renders heart emoji', () => {
-      const { getByText } = render(<Emoji name="heart" />)
-      expect(getByText('❤️')).toBeTruthy()
-    })
-  })
-
   describe('flag emojis using Unicode regional indicators', () => {
     // These tests verify the countryCodeToFlag function works correctly
     // by converting ISO country codes to flag emojis
@@ -44,7 +32,7 @@ describe('Emoji', () => {
       expect(getByText('🇯🇵')).toBeTruthy()
     })
 
-    // These flags previously failed with node-emoji v2 naming issues
+    // Additional flag tests
     it('renders Canadian flag', () => {
       const { getByText } = render(<Emoji name="flag-ca" />)
       expect(getByText('🇨🇦')).toBeTruthy()
@@ -120,6 +108,11 @@ describe('Emoji', () => {
     it('handles lowercase country codes', () => {
       const { getByText } = render(<Emoji name="flag-us" />)
       expect(getByText('🇺🇸')).toBeTruthy()
+    })
+
+    it('renders non-flag names as-is', () => {
+      const { getByText } = render(<Emoji name="some-other-emoji" />)
+      expect(getByText('some-other-emoji')).toBeTruthy()
     })
   })
 })

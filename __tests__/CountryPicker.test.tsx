@@ -14,9 +14,24 @@ jest.mock('react-async-hook', () => ({
   },
 }))
 
-jest.mock('node-emoji', () => ({
-  get: (name: string) => name || '',
-}))
+// Mock LegendList with FlatList for testing
+jest.mock('@legendapp/list', () => {
+  const React = require('react')
+  const { FlatList } = require('react-native')
+
+  return {
+    LegendList: React.forwardRef((props: any, ref: any) => {
+      const { estimatedItemSize, recycleItems, ...flatListProps } = props
+      const getItemLayout = (_data: any, index: number) => ({
+        length: estimatedItemSize || 50,
+        offset: (estimatedItemSize || 50) * index,
+        index,
+      })
+      return <FlatList ref={ref} getItemLayout={getItemLayout} {...flatListProps} />
+    }),
+    LegendListRenderItemProps: {},
+  }
+})
 
 jest.mock('react-native-safe-area-context', () => {
   const React = require('react')

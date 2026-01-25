@@ -26,32 +26,26 @@ const localData: DataCountry = {
 
 export const loadDataAsync = (
   (data: DataCountry) =>
-  (dataType: FlagType = FlagType.EMOJI): Promise<CountryMap> => {
-    return new Promise((resolve, reject) => {
-      switch (dataType) {
-        case FlagType.FLAT:
-          if (!data.imageCountries) {
-            fetch(imageJsonUrl)
-              .then((response: Response) => response.json())
-              .then((remoteData: any) => {
-                data.imageCountries = remoteData
-                resolve(data.imageCountries!)
-              })
-              .catch(reject)
-          } else {
-            resolve(data.imageCountries)
-          }
-          break
-        default:
-          if (!data.emojiCountries) {
-            data.emojiCountries = require('./assets/data/countries-emoji.json')
-            resolve(data.emojiCountries!)
-          } else {
-            resolve(data.emojiCountries)
-          }
-          break
-      }
-    })
+  async (dataType: FlagType = FlagType.EMOJI): Promise<CountryMap> => {
+    switch (dataType) {
+      case FlagType.FLAT:
+        if (!data.imageCountries) {
+          const response = await fetch(imageJsonUrl)
+          const remoteData = (await response.json()) as CountryMap
+          data.imageCountries = remoteData
+        }
+        return data.imageCountries
+
+      default:
+        if (!data.emojiCountries) {
+          // Lazy load country data - only loaded when picker is first opened
+          // Using require() for synchronous loading after the async boundary
+          // This still achieves lazy loading because loadDataAsync is only called when needed
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          data.emojiCountries = require('./assets/data/countries-emoji.json') as CountryMap
+        }
+        return data.emojiCountries
+    }
   }
 )(localData)
 

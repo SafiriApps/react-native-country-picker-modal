@@ -153,7 +153,7 @@ export const FlagButton = ({
             withCallingCodeButton,
             withCurrencyButton,
             withFlagButton,
-            flagSize: flagSize!,
+            flagSize: flagSize ?? 30,
             placeholder,
           }}
         />

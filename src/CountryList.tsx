@@ -2,16 +2,14 @@ import React, { useRef, memo, useState, useEffect } from 'react'
 import {
   StyleSheet,
   View,
-  FlatList,
   ScrollView,
   TouchableOpacity,
-  ListRenderItemInfo,
   PixelRatio,
-  FlatListProps,
-  Dimensions,
 } from 'react-native'
+import { LegendList, LegendListRenderItemProps } from '@legendapp/list'
+import type { LegendListRef } from '@legendapp/list'
 import { useTheme } from './CountryTheme'
-import { Country, Omit } from './types'
+import { Country } from './types'
 import { Flag } from './Flag'
 import { useContext } from './CountryContext'
 import { CountryText } from './CountryText'
@@ -73,7 +71,7 @@ const Letter = ({ letter, scrollTo }: LetterProps) => {
       {...{ activeOpacity }}
     >
       <View style={styles.letter}>
-        <CountryText style={[styles.letterText, { fontSize: fontSize! * 0.8 }]}>
+        <CountryText style={[styles.letterText, { fontSize: (fontSize ?? 16) * 0.8 }]}>
           {letter}
         </CountryText>
       </View>
@@ -123,7 +121,7 @@ const CountryItem = (props: CountryItemProps) => {
       <View style={[styles.itemCountry, { height: itemHeight }]}>
         {withFlag && (
           <Flag
-            {...{ withEmoji, countryCode: country.cca2, flagSize: flagSize! }}
+            {...{ withEmoji, countryCode: country.cca2, flagSize: flagSize ?? 30 }}
           />
         )}
         <View style={styles.itemCountryName}>
@@ -138,12 +136,6 @@ const CountryItem = (props: CountryItemProps) => {
 }
 const MemoCountryItem = memo<CountryItemProps>(CountryItem)
 
-const renderItem =
-  (props: Omit<CountryItemProps, 'country'>) =>
-    ({ item: country }: ListRenderItemInfo<Country>) => (
-      <MemoCountryItem {...{ country, ...props }} />
-    )
-
 interface CountryListProps {
   data: Country[]
   filter?: string
@@ -153,7 +145,6 @@ interface CountryListProps {
   withAlphaFilter?: boolean
   withCallingCode?: boolean
   withCurrency?: boolean
-  flatListProps?: FlatListProps<Country>
   onSelect(country: Country): void
 }
 
@@ -163,8 +154,6 @@ const ItemSeparatorComponent = () => {
     <View style={[styles.sep, { borderBottomColor: primaryColorVariant }]} />
   )
 }
-
-const { height } = Dimensions.get('window')
 
 export const CountryList = (props: CountryListProps) => {
   const {
@@ -176,12 +165,11 @@ export const CountryList = (props: CountryListProps) => {
     withCurrency,
     onSelect,
     filter,
-    flatListProps,
     filterFocus = undefined,
   } = props
 
-  const flatListRef = useRef<FlatList<Country>>(null)
-  const [letter, setLetter] = useState<string>('')
+  const listRef = useRef<LegendListRef>(null)
+  const [, setLetter] = useState<string>('')
   const { itemHeight, backgroundColor } = useTheme()
   const indexLetter = data
     .map((country: Country) => (country.name as string).substring(0, 1))
@@ -190,16 +178,11 @@ export const CountryList = (props: CountryListProps) => {
   const scrollTo = (letter: string, animated: boolean = true) => {
     const index = indexLetter.indexOf(letter)
     setLetter(letter)
-    if (flatListRef.current) {
-      flatListRef.current.scrollToIndex({ animated, index })
+    if (listRef.current) {
+      listRef.current.scrollToIndex({ animated, index })
     }
   }
-  const onScrollToIndexFailed = () => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToEnd()
-      scrollTo(letter)
-    }
-  }
+
   const { search, getLetters } = useContext()
   const letters = getLetters(data)
   useEffect(() => {
@@ -208,35 +191,35 @@ export const CountryList = (props: CountryListProps) => {
     }
   }, [filterFocus])
 
-  const initialNumToRender = Math.round(height / (itemHeight || 1))
+  const renderItem =
+    ({ item }: LegendListRenderItemProps<Country>) => (
+      <MemoCountryItem
+        country={item}
+        withEmoji={withEmoji}
+        withFlag={withFlag}
+        withCallingCode={withCallingCode}
+        withCurrency={withCurrency}
+        onSelect={onSelect}
+      />
+    )
+
+  const filteredData = search(filter, data)
+
+  const keyExtractor = (item: Country) => item?.cca2
+
   return (
     <View style={[styles.container, { backgroundColor }]}>
-      <FlatList
-        ref={flatListRef}
+      <LegendList
+        ref={listRef}
         testID='list-countries'
         keyboardShouldPersistTaps='handled'
-        automaticallyAdjustContentInsets={false}
         scrollEventThrottle={1}
-        getItemLayout={(_data: any, index) => ({
-          length: itemHeight! + borderBottomWidth,
-          offset: (itemHeight! + borderBottomWidth) * index,
-          index,
-        })}
-        renderItem={renderItem({
-          withEmoji,
-          withFlag,
-          withCallingCode,
-          withCurrency,
-          onSelect,
-        })}
-        {...{
-          data: search(filter, data),
-          keyExtractor: (item: Country) => item?.cca2,
-          onScrollToIndexFailed,
-          ItemSeparatorComponent,
-          initialNumToRender,
-        }}
-        {...flatListProps}
+        renderItem={renderItem}
+        data={filteredData}
+        keyExtractor={keyExtractor}
+        ItemSeparatorComponent={ItemSeparatorComponent}
+        estimatedItemSize={(itemHeight ?? 50) + borderBottomWidth}
+        recycleItems
       />
       {withAlphaFilter && (
         <ScrollView

@@ -10,7 +10,7 @@ import {
 import { CountryProvider, DEFAULT_COUNTRY_CONTEXT } from './CountryContext'
 import { ThemeProvider, DEFAULT_THEME, Theme } from './CountryTheme'
 import { CountryFilterProps } from './CountryFilter'
-import { StyleProp, ViewStyle, ModalProps, FlatListProps } from 'react-native'
+import { StyleProp, ViewStyle, ModalProps } from 'react-native'
 import { CountryPicker } from './CountryPicker'
 
 interface Props {
@@ -25,7 +25,6 @@ interface Props {
   translation?: TranslationLanguageCode
   modalProps?: ModalProps
   filterProps?: CountryFilterProps
-  flatListProps?: FlatListProps<Country>
   placeholder?: string
   withAlphaFilter?: boolean
   withCallingCode?: boolean
@@ -72,4 +71,23 @@ export { FlagButton } from './FlagButton'
 export { Flag } from './Flag'
 export { HeaderModal } from './HeaderModal'
 export { CountryModalProvider } from './CountryModalProvider'
-export * from './types'
+
+// Explicit type exports for better tree-shaking (instead of export * from './types')
+export {
+  CountryCodeList,
+  RegionList,
+  SubregionList,
+  TranslationLanguageCodeList,
+  FlagType,
+  isCountryCode,
+} from './types'
+export type {
+  CountryCode,
+  CallingCode,
+  CurrencyCode,
+  TranslationLanguageCodeMap,
+  Country,
+  Region,
+  Subregion,
+  TranslationLanguageCode,
+} from './types'

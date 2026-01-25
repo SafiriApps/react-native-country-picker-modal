@@ -45,3 +45,4 @@ web-build/
 
 ./eslintrc.js
 /scripts/
+/example/

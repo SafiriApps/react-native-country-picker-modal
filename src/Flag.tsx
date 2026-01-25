@@ -1,8 +1,7 @@
-import React, { memo } from 'react'
+import React, { memo, useState, useEffect } from 'react'
 import { Emoji } from './Emoji'
 import { CountryCode } from './types'
 import { useContext } from './CountryContext'
-import { useAsync } from 'react-async-hook'
 import {
   Image,
   StyleSheet,
@@ -44,10 +43,35 @@ interface FlagType {
 
 const ImageFlag = memo(({ countryCode, flagSize }: FlagType) => {
   const { getImageFlagAsync } = useContext()
-  const asyncResult = useAsync(getImageFlagAsync, [countryCode])
-  if (asyncResult.loading) {
+  const [loading, setLoading] = useState(true)
+  const [imageUri, setImageUri] = useState<string | undefined>(undefined)
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+
+    getImageFlagAsync(countryCode)
+      .then((uri) => {
+        if (!cancelled) {
+          setImageUri(uri)
+          setLoading(false)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setLoading(false)
+        }
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [countryCode, getImageFlagAsync])
+
+  if (loading) {
     return <ActivityIndicator size={'small'} />
   }
+
   return (
     <Image
       resizeMode={'contain'}
@@ -55,27 +79,52 @@ const ImageFlag = memo(({ countryCode, flagSize }: FlagType) => {
         styles.imageFlag,
         { borderColor: 'transparent', height: flagSize },
       ]}
-      source={{ uri: asyncResult.result }}
+      source={{ uri: imageUri }}
     />
   )
 })
 
 const EmojiFlag = memo(({ countryCode, flagSize }: FlagType) => {
   const { getEmojiFlagAsync } = useContext()
-  const asyncResult = useAsync(getEmojiFlagAsync, [countryCode])
+  const [loading, setLoading] = useState(true)
+  const [emojiName, setEmojiName] = useState<string | undefined>(undefined)
 
-  if (asyncResult.loading) {
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+
+    getEmojiFlagAsync(countryCode)
+      .then((name) => {
+        if (!cancelled) {
+          setEmojiName(name)
+          setLoading(false)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setLoading(false)
+        }
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [countryCode, getEmojiFlagAsync])
+
+  if (loading) {
     return <ActivityIndicator size={'small'} />
   }
-  if (!asyncResult.result) {
+
+  if (!emojiName) {
     return null
   }
+
   return (
     <Text
       style={[styles.emojiFlag, { fontSize: flagSize }]}
       allowFontScaling={false}
     >
-      <Emoji name={asyncResult.result} />
+      <Emoji name={emojiName} />
     </Text>
   )
 })

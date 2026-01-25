@@ -1,6 +1,5 @@
 import React, { memo } from 'react'
 import { Text } from 'react-native'
-import { get as getEmoji } from 'node-emoji'
 
 /**
  * Convert a 2-letter ISO country code to a flag emoji using Unicode regional indicator symbols.
@@ -27,18 +26,16 @@ const Emoji = memo(({ name }: { name: string }) => {
     return null;
   }
 
-  let emoji: string
-
-  // Check if this is a flag emoji (format: 'flag-XX' where XX is country code)
+  // All country flags use 'flag-XX' format where XX is the country code
+  // The countryCodeToFlag function converts this to Unicode regional indicator symbols
   if (name.startsWith('flag-')) {
     const countryCode = name.replace('flag-', '')
-    emoji = countryCodeToFlag(countryCode)
-  } else {
-    // Use node-emoji for non-flag emojis
-    emoji = (getEmoji as (value: string) => string)(name) || ''
+    const emoji = countryCodeToFlag(countryCode)
+    return <Text allowFontScaling={false}>{emoji}</Text>
   }
 
-  return <Text allowFontScaling={false}>{emoji}</Text>
+  // For any other emoji format, return the name as-is (shouldn't happen in this library)
+  return <Text allowFontScaling={false}>{name}</Text>
 })
 
 export { Emoji }

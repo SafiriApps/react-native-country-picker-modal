@@ -15,10 +15,6 @@ jest.mock('react-async-hook', () => ({
   },
 }))
 
-jest.mock('node-emoji', () => ({
-  get: (name: string) => name || '',
-}))
-
 const renderWithProviders = (component: React.ReactElement) => {
   return render(
     <ThemeProvider theme={DEFAULT_THEME}>

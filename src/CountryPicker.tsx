@@ -1,7 +1,6 @@
 import React, { ReactNode, useState, useEffect } from 'react'
 import {
   ModalProps,
-  FlatListProps,
   StyleProp,
   ViewStyle,
   ImageSourcePropType,
@@ -58,7 +57,6 @@ interface CountryPickerProps {
   preferredCountries?: CountryCode[]
   modalProps?: ModalProps
   filterProps?: CountryFilterProps
-  flatListProps?: FlatListProps<Country>
   withEmoji?: boolean
   withCountryNameButton?: boolean
   withCurrencyButton?: boolean
@@ -98,7 +96,6 @@ export const CountryPicker = (props: CountryPickerProps) => {
     renderCountryFilter,
     filterProps,
     modalProps,
-    flatListProps,
     onSelect,
     withEmoji,
     withFilter,
@@ -134,32 +131,33 @@ export const CountryPicker = (props: CountryPickerProps) => {
 
   useEffect(() => {
     if (state.visible !== props.visible) {
-      setState({ ...state, visible: props.visible || false })
+      setState((prev) => ({ ...prev, visible: props.visible || false }))
     }
-  }, [props.visible])
+  }, [props.visible, state.visible])
 
   const onOpen = () => {
-    setState({ ...state, visible: true })
-    if (handleOpen) {
-      handleOpen()
-    }
-  }
-  const onClose = () => {
-    setState({ ...state, filter: '', visible: false })
-    if (handleClose) {
-      handleClose()
-    }
+    setState((prev) => ({ ...prev, visible: true }))
+    handleOpen?.()
   }
 
-  const setFilter = (filter: string) => setState({ ...state, filter })
-  const setCountries = (countries: Country[]) =>
-    setState({ ...state, countries })
+  const onClose = () => {
+    setState((prev) => ({ ...prev, filter: '', visible: false }))
+    handleClose?.()
+  }
+
+  const setFilter = (filter: string) => setState((prev) => ({ ...prev, filter }))
+
+  const setCountries = (countries: Country[]) => setState((prev) => ({ ...prev, countries }))
+
   const onSelectClose = (country: Country) => {
     onSelect(country)
-    onClose()
+    onClose?.()
   }
-  const onFocus = () => setState({ ...state, filterFocus: true })
-  const onBlur = () => setState({ ...state, filterFocus: false })
+
+  const onFocus = () => setState((prev) => ({ ...prev, filterFocus: true }))
+
+  const onBlur = () => setState((prev) => ({ ...prev, filterFocus: false }))
+
   const flagProp = {
     allowFontScaling,
     countryCode,
@@ -236,7 +234,6 @@ export const CountryPicker = (props: CountryPickerProps) => {
             withEmoji,
             filter,
             filterFocus,
-            flatListProps,
           }}
         />
       </CountryModal>

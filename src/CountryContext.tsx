@@ -24,7 +24,8 @@ export interface CountryContextParam {
   search: typeof search
   getCountryInfoAsync: typeof getCountryInfoAsync
 }
-export const DEFAULT_COUNTRY_CONTEXT = {
+
+export const DEFAULT_COUNTRY_CONTEXT: CountryContextParam = {
   translation: 'common' as TranslationLanguageCode,
   getCountryNameAsync,
   getImageFlagAsync,
@@ -36,13 +37,32 @@ export const DEFAULT_COUNTRY_CONTEXT = {
   getLetters,
   getCountryInfoAsync,
 }
+
 export const CountryContext = React.createContext<CountryContextParam>(
   DEFAULT_COUNTRY_CONTEXT,
 )
 
 export const useContext = () => React.useContext(CountryContext)
 
-export const {
-  Provider: CountryProvider,
-  Consumer: CountryConsumer,
-} = CountryContext
+// Memoized provider that prevents unnecessary re-renders when translation hasn't changed
+interface CountryProviderProps {
+  value: CountryContextParam
+  children: React.ReactNode
+}
+
+export const CountryProvider = ({ value, children }: CountryProviderProps) => {
+  // Memoize the context value - only recreate when translation changes
+  // All other values are stable module-level functions
+  const memoizedValue = React.useMemo(
+    () => value,
+    [value.translation]
+  )
+
+  return (
+    <CountryContext.Provider value={memoizedValue}>
+      {children}
+    </CountryContext.Provider>
+  )
+}
+
+export const CountryConsumer = CountryContext.Consumer

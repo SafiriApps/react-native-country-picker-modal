@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
+import { FlatList, View } from 'react-native'
 import { CountryList } from '../src/CountryList'
 import { ThemeProvider, DEFAULT_THEME } from '../src/CountryTheme'
 import { CountryProvider, DEFAULT_COUNTRY_CONTEXT } from '../src/CountryContext'
@@ -16,9 +17,25 @@ jest.mock('react-async-hook', () => ({
   },
 }))
 
-jest.mock('node-emoji', () => ({
-  get: (name: string) => name || '',
-}))
+// Mock LegendList with FlatList for testing
+jest.mock('@legendapp/list', () => {
+  const React = require('react')
+  const { FlatList } = require('react-native')
+
+  return {
+    LegendList: React.forwardRef((props: any, ref: any) => {
+      const { estimatedItemSize, recycleItems, ...flatListProps } = props
+      // Add getItemLayout for FlatList compatibility in tests
+      const getItemLayout = (_data: any, index: number) => ({
+        length: estimatedItemSize || 50,
+        offset: (estimatedItemSize || 50) * index,
+        index,
+      })
+      return <FlatList ref={ref} getItemLayout={getItemLayout} {...flatListProps} />
+    }),
+    LegendListRenderItemProps: {},
+  }
+})
 
 const france: Country = {
   region: 'Europe',

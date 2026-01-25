@@ -29,7 +29,10 @@ export const CountryModal = ({
   const { visible } = props
   const content = React.useMemo(
     () => (
-      <SafeAreaView style={[styles.container, { backgroundColor }]}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor }]}
+        edges={['top', 'bottom', 'left', 'right']}
+      >
         {children}
       </SafeAreaView>
     ),
