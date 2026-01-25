@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { ModalProps, StyleSheet, Platform } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import {
+  SafeAreaView,
+} from 'react-native-safe-area-context'
 import { AnimatedModal } from './AnimatedModal'
 import { Modal } from './Modal'
 import { useTheme } from './CountryTheme'
@@ -30,9 +32,7 @@ export const CountryModal = ({
   const content = React.useMemo(
     () => (
       <SafeAreaView
-        style={[styles.container, { backgroundColor }]}
-        edges={['top', 'bottom', 'left', 'right']}
-      >
+        style={[styles.container, { backgroundColor }]}>
         {children}
       </SafeAreaView>
     ),

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Button, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import CountryPicker, {
   Country,
   CountryCode,
@@ -15,6 +15,7 @@ const TranslationScreen = () => {
   const [country, setCountry] = React.useState<Country>()
   const [translation, setTranslation] =
     React.useState<TranslationLanguageCode>('common')
+  const [visible, setVisible] = React.useState(false)
 
   const onSelect = (selected: Country) => {
     setCountryCode(selected.cca2)
@@ -54,8 +55,12 @@ const TranslationScreen = () => {
           onSelect={onSelect}
           translation={translation}
           {...pickerProps}
+          modalProps={{ visible }}
+          onOpen={() => setVisible(true)}
+          onClose={() => setVisible(false)}
         />
       </View>
+      <Button title="Open modal" onPress={() => setVisible(true)} />
       <CountrySummary country={country} title="Selected country" />
     </ScrollView>
   )

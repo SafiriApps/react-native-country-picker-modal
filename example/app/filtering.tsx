@@ -30,6 +30,7 @@ const FilteringScreen = () => {
   const [country, setCountry] = React.useState<Country>()
   const [region, setRegion] = React.useState<Region | undefined>()
   const [subregion, setSubregion] = React.useState<Subregion | undefined>()
+  const [visible, setVisible] = React.useState(false)
 
   const onSelect = (selected: Country) => {
     setCountryCode(selected.cca2)
@@ -70,8 +71,12 @@ const FilteringScreen = () => {
             windowSize: 10,
           }}
           {...pickerProps}
+          modalProps={{ visible }}
+          onOpen={() => setVisible(true)}
+          onClose={() => setVisible(false)}
         />
       </View>
+      <Button title="Open modal" onPress={() => setVisible(true)} />
       <CountrySummary country={country} title="Selected country" />
     </ScrollView>
   )

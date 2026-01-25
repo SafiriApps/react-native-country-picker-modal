@@ -16,6 +16,7 @@ const BasicScreen = () => {
   const [country, setCountry] = React.useState<Country>()
   const [callingCode, setCallingCode] = React.useState<string>('-')
   const [totalCountries, setTotalCountries] = React.useState<number | null>(null)
+  const [visible, setVisible] = React.useState(false)
 
   const onSelect = (selected: Country) => {
     setCountryCode(selected.cca2)
@@ -40,8 +41,12 @@ const BasicScreen = () => {
           countryCode={countryCode}
           onSelect={onSelect}
           {...pickerProps}
+          modalProps={{ visible }}
+          onOpen={() => setVisible(true)}
+          onClose={() => setVisible(false)}
         />
       </View>
+      <Button title="Open modal" onPress={() => setVisible(true)} />
       <CountrySummary country={country} title="Selected country" />
       <View style={styles.serviceCard}>
         <Text style={styles.serviceTitle}>Service helpers</Text>

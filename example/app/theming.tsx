@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Button, ScrollView, StyleSheet, Text, View } from 'react-native'
 import CountryPicker, { Country, CountryCode } from 'react-native-country-picker-modal'
 import { CountrySummary } from '../components/CountrySummary'
 import { SettingRow } from '../components/SettingRow'
@@ -17,6 +17,7 @@ const ThemingScreen = () => {
   const [countryCode, setCountryCode] = React.useState<CountryCode>('US')
   const [country, setCountry] = React.useState<Country>()
   const [useCustomTheme, setUseCustomTheme] = React.useState(false)
+  const [visible, setVisible] = React.useState(false)
 
   const onSelect = (selected: Country) => {
     setCountryCode(selected.cca2)
@@ -42,8 +43,12 @@ const ThemingScreen = () => {
           onSelect={onSelect}
           {...pickerProps}
           theme={useCustomTheme ? customTheme : pickerProps.theme}
+          modalProps={{ visible }}
+          onOpen={() => setVisible(true)}
+          onClose={() => setVisible(false)}
         />
       </View>
+      <Button title="Open modal" onPress={() => setVisible(true)} />
       <CountrySummary country={country} title="Selected country" />
     </ScrollView>
   )

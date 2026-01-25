@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  Button,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -24,6 +25,7 @@ const CustomRenderingScreen = () => {
   const { pickerProps } = usePickerSettings()
   const [countryCode, setCountryCode] = React.useState<CountryCode>('US')
   const [country, setCountry] = React.useState<Country>()
+  const [visible, setVisible] = React.useState(false)
 
   const onSelect = (selected: Country) => {
     setCountryCode(selected.cca2)
@@ -65,8 +67,12 @@ const CustomRenderingScreen = () => {
           renderFlagButton={renderFlagButton}
           renderCountryFilter={renderCountryFilter}
           {...pickerProps}
+          modalProps={{ visible }}
+          onOpen={() => setVisible(true)}
+          onClose={() => setVisible(false)}
         />
       </View>
+      <Button title="Open modal" onPress={() => setVisible(true)} />
       <CountrySummary country={country} title="Selected country" />
     </ScrollView>
   )
