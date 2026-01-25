@@ -41,7 +41,7 @@ const FilteringScreen = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Filtering + Performance</Text>
       <Text style={styles.subtitle}>
-        Filter by region/subregion and tune list performance with flatListProps.
+        Filter by region/subregion and explore performance-friendly filtering.
       </Text>
       <ExampleCard title="Filter controls">
         <View style={styles.buttonRow}>
@@ -66,10 +66,6 @@ const FilteringScreen = () => {
           countryCodes={['US', 'GB', 'FR', 'DE', 'BR', 'ZA']}
           excludeCountries={['FR']}
           preferredCountries={['US', 'GB']}
-          flatListProps={{
-            initialNumToRender: 20,
-            windowSize: 10,
-          }}
           {...pickerProps}
           modalProps={{ visible }}
           onOpen={() => setVisible(true)}
