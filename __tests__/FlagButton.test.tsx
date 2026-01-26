@@ -4,17 +4,6 @@ import { FlagButton } from '../src/FlagButton'
 import { ThemeProvider, DEFAULT_THEME } from '../src/CountryTheme'
 import { CountryProvider, DEFAULT_COUNTRY_CONTEXT } from '../src/CountryContext'
 
-jest.mock('react-async-hook', () => ({
-  useAsync: (fn: () => Promise<string>, deps: string[]) => {
-    const countryCode = deps[0]
-    return {
-      loading: false,
-      result: countryCode ? `flag-${countryCode.toLowerCase()}` : 'flag-us',
-      error: undefined,
-    }
-  },
-}))
-
 const renderWithProviders = (component: React.ReactElement) => {
   return render(
     <ThemeProvider theme={DEFAULT_THEME}>

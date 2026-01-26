@@ -2,18 +2,6 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
 import CountryPicker from '../src/'
 
-jest.mock('react-async-hook', () => ({
-  useAsync: (fn: () => Promise<string>, deps: string[]) => {
-    // Return a mock emoji flag based on the country code
-    const countryCode = deps[0]
-    return {
-      loading: false,
-      result: countryCode ? `flag-${countryCode.toLowerCase()}` : 'flag-us',
-      error: undefined,
-    }
-  },
-}))
-
 // Mock LegendList with FlatList for testing
 jest.mock('@legendapp/list', () => {
   const React = require('react')

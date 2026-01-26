@@ -6,17 +6,6 @@ import { ThemeProvider, DEFAULT_THEME } from '../src/CountryTheme'
 import { CountryProvider, DEFAULT_COUNTRY_CONTEXT } from '../src/CountryContext'
 import { Country } from '../src/types'
 
-jest.mock('react-async-hook', () => ({
-  useAsync: (fn: () => Promise<string>, deps: string[]) => {
-    const countryCode = deps[0]
-    return {
-      loading: false,
-      result: countryCode ? `flag-${countryCode.toLowerCase()}` : '🇫🇷',
-      error: undefined,
-    }
-  },
-}))
-
 // Mock LegendList with FlatList for testing
 jest.mock('@legendapp/list', () => {
   const React = require('react')
