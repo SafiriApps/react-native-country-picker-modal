@@ -7,10 +7,8 @@ import CountryPicker, {
   TranslationLanguageCodeList,
 } from 'react-native-country-picker-modal'
 import { CountrySummary } from '../components/CountrySummary'
-import { usePickerSettings } from '../hooks/usePickerSettings'
 
 const TranslationScreen = () => {
-  const { pickerProps } = usePickerSettings()
   const [countryCode, setCountryCode] = React.useState<CountryCode>('US')
   const [country, setCountry] = React.useState<Country>()
   const [translation, setTranslation] =
@@ -54,7 +52,8 @@ const TranslationScreen = () => {
           countryCode={countryCode}
           onSelect={onSelect}
           translation={translation}
-          {...pickerProps}
+          withFilter
+          withEmoji
           modalProps={{ visible }}
           onOpen={() => setVisible(true)}
           onClose={() => setVisible(false)}

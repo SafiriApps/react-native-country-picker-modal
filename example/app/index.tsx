@@ -3,16 +3,13 @@ import { Link } from 'expo-router'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 
 const routes = [
-  { title: 'Settings (GIF-style toggles)', href: '/settings' },
-  { title: 'Quick Start', href: '/quick-start' },
-  { title: 'Basic Usage + Services', href: '/basic' },
+  { title: 'Quick Start', href: '/settings' },
   { title: 'Theming', href: '/theming' },
-  { title: 'Filtering + Performance', href: '/filtering' },
   { title: 'Translation', href: '/translation' },
-  { title: 'Display Options', href: '/display-options' },
-  { title: 'Prop Matrix', href: '/prop-matrix' },
+  { title: 'Filtering + Performance', href: '/filtering' },
   { title: 'Custom Rendering', href: '/custom-rendering' },
   { title: 'Programmatic Control', href: '/programmatic' },
+  { title: 'Basic Usage + Services', href: '/basic' },
 ]
 
 const HomeScreen = () => {

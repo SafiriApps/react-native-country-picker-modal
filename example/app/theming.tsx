@@ -1,9 +1,8 @@
 import React from 'react'
 import { Button, ScrollView, StyleSheet, Text, View } from 'react-native'
-import CountryPicker, { Country, CountryCode } from 'react-native-country-picker-modal'
+import CountryPicker, { Country, CountryCode, DARK_THEME } from 'react-native-country-picker-modal'
 import { CountrySummary } from '../components/CountrySummary'
 import { SettingRow } from '../components/SettingRow'
-import { usePickerSettings } from '../hooks/usePickerSettings'
 
 const customTheme = {
   primaryColor: '#2a7bf6',
@@ -13,36 +12,56 @@ const customTheme = {
 }
 
 const ThemingScreen = () => {
-  const { pickerProps } = usePickerSettings()
   const [countryCode, setCountryCode] = React.useState<CountryCode>('US')
   const [country, setCountry] = React.useState<Country>()
-  const [useCustomTheme, setUseCustomTheme] = React.useState(false)
   const [visible, setVisible] = React.useState(false)
+
+  // Local state for theming options - scoped to this screen only
+  const [useCustomTheme, setUseCustomTheme] = React.useState(false)
+  const [useDarkTheme, setUseDarkTheme] = React.useState(false)
 
   const onSelect = (selected: Country) => {
     setCountryCode(selected.cca2)
     setCountry(selected)
   }
 
+  const getTheme = () => {
+    if (useCustomTheme) return customTheme
+    if (useDarkTheme) return DARK_THEME
+    return {}
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Theming</Text>
       <Text style={styles.subtitle}>
-        Toggle a custom theme on top of the global settings.
+        Toggle between default, dark, and custom themes.
       </Text>
       <View style={styles.controls}>
         <SettingRow
           label="Use custom theme"
           value={useCustomTheme}
-          onValueChange={setUseCustomTheme}
+          onValueChange={(value) => {
+            setUseCustomTheme(value)
+            if (value) setUseDarkTheme(false)
+          }}
+        />
+        <SettingRow
+          label="Use dark theme"
+          value={useDarkTheme}
+          onValueChange={(value) => {
+            setUseDarkTheme(value)
+            if (value) setUseCustomTheme(false)
+          }}
         />
       </View>
       <View style={styles.pickerRow}>
         <CountryPicker
           countryCode={countryCode}
           onSelect={onSelect}
-          {...pickerProps}
-          theme={useCustomTheme ? customTheme : pickerProps.theme}
+          withFilter
+          withEmoji
+          theme={getTheme()}
           modalProps={{ visible }}
           onOpen={() => setVisible(true)}
           onClose={() => setVisible(false)}

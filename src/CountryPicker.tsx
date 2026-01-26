@@ -26,8 +26,8 @@ interface RenderFlagButtonProps
   renderFlagButton?(props: React.ComponentProps<typeof FlagButton>): ReactNode
 }
 
-interface RenderCountryFilterProps
-  extends React.ComponentProps<typeof CountryFilter> {
+interface RenderCountryFilterProps {
+  filterProps: React.ComponentProps<typeof CountryFilter>
   renderCountryFilter?(
     props: React.ComponentProps<typeof CountryFilter>,
   ): ReactNode
@@ -40,11 +40,14 @@ const renderFlagButton = (props: RenderFlagButtonProps): ReactNode =>
     <FlagButton {...props} />
   )
 
-const renderFilter = (props: RenderCountryFilterProps): ReactNode =>
-  props.renderCountryFilter ? (
-    props.renderCountryFilter(props)
+const renderFilter = ({
+  filterProps,
+  renderCountryFilter,
+}: RenderCountryFilterProps): ReactNode =>
+  renderCountryFilter ? (
+    renderCountryFilter(filterProps)
   ) : (
-    <CountryFilter {...props} />
+    <CountryFilter {...filterProps} />
   )
 
 interface CountryPickerProps {
@@ -222,16 +225,17 @@ export const CountryPicker = (props: CountryPickerProps) => {
             closeButtonStyle,
             withCloseButton,
           }}
-          renderFilter={(props) =>
+          renderFilter={() =>
             renderFilter({
-              ...props,
-              allowFontScaling,
               renderCountryFilter,
-              onChangeText: setFilter,
-              value: filter,
-              onFocus,
-              onBlur,
-              ...filterProps,
+              filterProps: {
+                allowFontScaling,
+                onChangeText: setFilter,
+                value: filter,
+                onFocus,
+                onBlur,
+                ...filterProps,
+              },
             })
           }
         />

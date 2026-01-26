@@ -8,10 +8,8 @@ import CountryPicker, {
   getCallingCode,
 } from 'react-native-country-picker-modal'
 import { CountrySummary } from '../components/CountrySummary'
-import { usePickerSettings } from '../hooks/usePickerSettings'
 
 const BasicScreen = () => {
-  const { pickerProps } = usePickerSettings()
   const [countryCode, setCountryCode] = React.useState<CountryCode>('US')
   const [country, setCountry] = React.useState<Country>()
   const [callingCode, setCallingCode] = React.useState<string>('-')
@@ -40,7 +38,8 @@ const BasicScreen = () => {
         <CountryPicker
           countryCode={countryCode}
           onSelect={onSelect}
-          {...pickerProps}
+          withFilter
+          withEmoji
           modalProps={{ visible }}
           onOpen={() => setVisible(true)}
           onClose={() => setVisible(false)}

@@ -10,7 +10,6 @@ import CountryPicker, {
 } from 'react-native-country-picker-modal'
 import { CountrySummary } from '../components/CountrySummary'
 import { ExampleCard } from '../components/ExampleCard'
-import { usePickerSettings } from '../hooks/usePickerSettings'
 
 const cycleValue = <T,>(values: readonly T[], current?: T): T | undefined => {
   if (!values.length) {
@@ -25,12 +24,13 @@ const cycleValue = <T,>(values: readonly T[], current?: T): T | undefined => {
 }
 
 const FilteringScreen = () => {
-  const { pickerProps } = usePickerSettings()
   const [countryCode, setCountryCode] = React.useState<CountryCode>('US')
   const [country, setCountry] = React.useState<Country>()
+  const [visible, setVisible] = React.useState(false)
+
+  // Local state for filtering options - scoped to this screen only
   const [region, setRegion] = React.useState<Region | undefined>()
   const [subregion, setSubregion] = React.useState<Subregion | undefined>()
-  const [visible, setVisible] = React.useState(false)
 
   const onSelect = (selected: Country) => {
     setCountryCode(selected.cca2)
@@ -66,7 +66,8 @@ const FilteringScreen = () => {
           countryCodes={['US', 'GB', 'FR', 'DE', 'BR', 'ZA']}
           excludeCountries={['FR']}
           preferredCountries={['US', 'GB']}
-          {...pickerProps}
+          withFilter
+          withEmoji
           modalProps={{ visible }}
           onOpen={() => setVisible(true)}
           onClose={() => setVisible(false)}

@@ -5,10 +5,8 @@ import CountryPicker, {
   CountryCode,
 } from 'react-native-country-picker-modal'
 import { CountrySummary } from '../components/CountrySummary'
-import { usePickerSettings } from '../hooks/usePickerSettings'
 
 const ProgrammaticScreen = () => {
-  const { pickerProps } = usePickerSettings()
   const [countryCode, setCountryCode] = React.useState<CountryCode>('US')
   const [country, setCountry] = React.useState<Country>()
   const [visible, setVisible] = React.useState(false)
@@ -28,10 +26,11 @@ const ProgrammaticScreen = () => {
         <CountryPicker
           countryCode={countryCode}
           onSelect={onSelect}
+          withFilter
+          withEmoji
           modalProps={{ visible }}
           onOpen={() => setVisible(true)}
           onClose={() => setVisible(false)}
-          {...pickerProps}
         />
       </View>
       <Button title="Open modal" onPress={() => setVisible(true)} />

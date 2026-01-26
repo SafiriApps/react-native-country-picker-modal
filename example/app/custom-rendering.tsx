@@ -16,13 +16,11 @@ import CountryPicker, {
   FlagButton,
 } from 'react-native-country-picker-modal'
 import { CountrySummary } from '../components/CountrySummary'
-import { usePickerSettings } from '../hooks/usePickerSettings'
 
 type FlagButtonProps = React.ComponentProps<typeof FlagButton>
 type CountryFilterProps = React.ComponentProps<typeof CountryFilter>
 
 const CustomRenderingScreen = () => {
-  const { pickerProps } = usePickerSettings()
   const [countryCode, setCountryCode] = React.useState<CountryCode>('US')
   const [country, setCountry] = React.useState<Country>()
   const [visible, setVisible] = React.useState(false)
@@ -41,13 +39,17 @@ const CustomRenderingScreen = () => {
     )
   }
 
+  // Custom filter component receives only TextInputProps (onChangeText, value, etc.)
+  // Styles can be passed via filterProps on CountryPicker and accessed via props.style
   const renderCountryFilter = (props: CountryFilterProps) => {
     return (
       <View style={styles.filterWrapper}>
         <Text style={styles.filterLabel}>Search</Text>
         <TextInput
+          testID="custom-filter-input"
+          autoCorrect={false}
           {...props}
-          placeholder="Search countries"
+          // Merge local styles with styles passed via filterProps
           style={[styles.filterInput, props.style]}
         />
       </View>
@@ -66,10 +68,15 @@ const CustomRenderingScreen = () => {
           onSelect={onSelect}
           renderFlagButton={renderFlagButton}
           renderCountryFilter={renderCountryFilter}
-          {...pickerProps}
+          withFilter
+          withEmoji
           modalProps={{ visible }}
           onOpen={() => setVisible(true)}
           onClose={() => setVisible(false)}
+          filterProps={{
+            placeholder: 'Search countries',
+            style: styles.filterInputFromProps,
+          }}
         />
       </View>
       <Button title="Open modal" onPress={() => setVisible(true)} />
@@ -127,6 +134,10 @@ const styles = StyleSheet.create({
   filterInput: {
     flex: 1,
     paddingVertical: 6,
+  },
+  filterInputFromProps: {
+    fontSize: 14,
+    color: '#333',
   },
 })
 
