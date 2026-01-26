@@ -15,17 +15,27 @@ import { useContext } from './CountryContext'
 import { CountryText } from './CountryText'
 
 const borderBottomWidth = 2 / PixelRatio.get()
+const ALPHA_FILTER_WIDTH = 35
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  },
+  list: {
+    flex: 1,
+  },
+  listWithAlphaFilter: {
+    paddingRight: ALPHA_FILTER_WIDTH,
+  },
+  lettersContainer: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: ALPHA_FILTER_WIDTH,
   },
   letters: {
     flex: 1,
-    marginRight: 10,
-    backgroundColor: 'transparent',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
@@ -45,9 +55,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   itemCountryName: {
-    width: '90%',
-  },
-  list: {
     flex: 1,
   },
   sep: {
@@ -212,6 +219,7 @@ export const CountryList = (props: CountryListProps) => {
       <LegendList
         ref={listRef}
         testID='list-countries'
+        style={[styles.list, withAlphaFilter && styles.listWithAlphaFilter]}
         keyboardShouldPersistTaps='handled'
         scrollEventThrottle={1}
         renderItem={renderItem}
@@ -224,6 +232,7 @@ export const CountryList = (props: CountryListProps) => {
       {withAlphaFilter && (
         <ScrollView
           scrollEnabled={false}
+          style={styles.lettersContainer}
           contentContainerStyle={styles.letters}
           keyboardShouldPersistTaps='always'
         >

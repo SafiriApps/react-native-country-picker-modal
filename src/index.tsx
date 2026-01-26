@@ -52,7 +52,7 @@ const Main = ({ theme, translation, onSelect = () => { }, withEmoji = true, ...p
   return (
     <ThemeProvider theme={{ ...DEFAULT_THEME, ...theme }}>
       <CountryProvider value={{ ...DEFAULT_COUNTRY_CONTEXT, translation }}>
-        <CountryPicker {...props} onSelect={onSelect} withEmoji={withEmoji} />
+        <CountryPicker {...props} onSelect={onSelect} withEmoji={withEmoji} translation={translation} />
       </CountryProvider>
     </ThemeProvider>
   )

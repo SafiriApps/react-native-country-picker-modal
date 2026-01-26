@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import { CountryModal } from './CountryModal'
 import { HeaderModal } from './HeaderModal'
-import { Country, CountryCode, FlagType, Region, Subregion } from './types'
+import { Country, CountryCode, FlagType, Region, Subregion, TranslationLanguageCode } from './types'
 import { CountryFilter, CountryFilterProps } from './CountryFilter'
 import { FlagButton } from './FlagButton'
 import { useContext } from './CountryContext'
@@ -57,6 +57,7 @@ interface CountryPickerProps {
   preferredCountries?: CountryCode[]
   modalProps?: ModalProps
   filterProps?: CountryFilterProps
+  translation?: TranslationLanguageCode
   withEmoji?: boolean
   withCountryNameButton?: boolean
   withCurrencyButton?: boolean
@@ -119,6 +120,7 @@ export const CountryPicker = (props: CountryPickerProps) => {
     excludeCountries,
     placeholder = 'Select Country',
     preferredCountries,
+    translation: translationProp,
   } = props
   const [state, setState] = useState<State>({
     visible: props.visible || false,
@@ -126,7 +128,8 @@ export const CountryPicker = (props: CountryPickerProps) => {
     filter: '',
     filterFocus: false,
   })
-  const { translation, getCountriesAsync } = useContext()
+  const { translation: contextTranslation, getCountriesAsync } = useContext()
+  const translation = translationProp ?? contextTranslation
   const { visible, filter, countries, filterFocus } = state
 
   useEffect(() => {
@@ -190,7 +193,17 @@ export const CountryPicker = (props: CountryPickerProps) => {
     return () => {
       cancel = true
     }
-  }, [translation, withEmoji])
+  }, [
+    translation,
+    withEmoji,
+    region,
+    subregion,
+    countryCodes,
+    excludeCountries,
+    preferredCountries,
+    withAlphaFilter,
+    getCountriesAsync,
+  ])
 
   return (
     <>

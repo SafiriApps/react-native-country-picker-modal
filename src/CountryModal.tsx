@@ -1,6 +1,11 @@
 import * as React from 'react'
-import { ModalProps, StyleSheet, Platform } from 'react-native'
 import {
+  ModalProps,
+  StyleSheet,
+  Platform,
+} from 'react-native'
+import {
+  SafeAreaProvider,
   SafeAreaView,
 } from 'react-native-safe-area-context'
 import { AnimatedModal } from './AnimatedModal'
@@ -31,10 +36,11 @@ export const CountryModal = ({
   const { visible } = props
   const content = React.useMemo(
     () => (
-      <SafeAreaView
-        style={[styles.container, { backgroundColor }]}>
-        {children}
-      </SafeAreaView>
+      <SafeAreaProvider>
+        <SafeAreaView style={[styles.container, { backgroundColor }]}>
+          {children}
+        </SafeAreaView>
+      </SafeAreaProvider>
     ),
     [children, backgroundColor]
   )
