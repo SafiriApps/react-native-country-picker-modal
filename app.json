@@ -3,8 +3,6 @@
     "name": "country-picker-example",
     "description": "Expo Country Picker Example",
     "slug": "country-picker-example",
-    "privacy": "public",
-    "sdkVersion": "52.0.0",
     "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,10 +13,7 @@
     "ios": {
       "supportsTablet": true
     },
-    "android": {
-      "newArchEnabled": true
-    },
-    "newArchEnabled": true,
+    "android": {},
     "androidStatusBar": {
       "backgroundColor": "#000000"
     }

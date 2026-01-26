@@ -2,6 +2,7 @@
   "expo": {
     "name": "Country Picker Example",
     "slug": "country-picker-example",
+    "scheme": "country-picker-example",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
