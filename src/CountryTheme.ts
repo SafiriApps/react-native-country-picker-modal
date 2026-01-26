@@ -1,4 +1,7 @@
-import { createTheming } from '@callstack/react-theme-provider'
+import {
+  createTheming,
+  type ThemingType
+} from '@callstack/react-theme-provider'
 import { Platform } from 'react-native'
 import { getHeightPercent } from './ratio'
 
@@ -28,6 +31,8 @@ export const DARK_THEME = {
 }
 export type Theme = Partial<typeof DEFAULT_THEME>
 
-const { ThemeProvider, useTheme } = createTheming<Theme>(DEFAULT_THEME)
+const theming: ThemingType<Theme> = createTheming<Theme>(DEFAULT_THEME)
 
-export { ThemeProvider, useTheme }
+export const ThemeProvider: ThemingType<Theme>['ThemeProvider'] =
+  theming.ThemeProvider
+export const useTheme: ThemingType<Theme>['useTheme'] = theming.useTheme
